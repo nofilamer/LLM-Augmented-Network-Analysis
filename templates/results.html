@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Analysis Results</title>
+    <style>
+        table {
+            width: 90%; /* Increase table width slightly for better spacing */
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        td {
+            word-wrap: break-word;  /* Ensures long text wraps correctly */
+            white-space: normal;    /* Allows text to wrap inside table cells */
+        }
+        td:first-child {
+            width: 25%;  /* Fix width for the "Metric" column */
+            font-weight: bold;
+        }
+        td:last-child {
+            width: 75%;  /* Set a wider width for "Analysis" */
+            max-width: 600px; /* Prevents too much stretching */
+        }
+    </style>
+</head>
+<body>
+    <h1>Network Analysis Report</h1>
+
+    <h2>📊 Collected Network Metrics</h2>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Value</th>
+        </tr>
+        {% for metric in metrics %}
+        <tr>
+            <td>{{ metric.Metric }}</td>
+            <td>{{ metric.Value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>📈 AI-Powered Analysis</h2>
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Analysis</th>
+        </tr>
+        {% for item in analysis %}
+        <tr>
+            <td><b>{{ item.Metric }}</b></td>
+            <td>{{ item.Analysis }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/"><button>Run Again</button></a>
+</body>
+</html>
+
