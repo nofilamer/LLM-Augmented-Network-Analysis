@@ -6,32 +6,106 @@
     <title>Network Analysis Dashboard</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
-            margin: 50px;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
         }
+        
+        .container {
+            margin-top: 100px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: center;
+        }
+
         h1 {
+            font-size: 28px;
             color: #333;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007BFF;
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .analyze-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #007BFF, #0056b3);
             color: white;
             border: none;
+            border-radius: 6px;
             cursor: pointer;
-            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #004080);
+            transform: scale(1.05);
+        }
+
+        /* Fancy Spinner */
+        .spinner-container {
+            display: none;
             margin-top: 20px;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 6px solid rgba(0, 123, 255, 0.3);
+            border-top: 6px solid #007BFF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <h1>Network Monitoring & Analysis</h1>
-    <p>Click the button below to analyze network performance:</p>
-    <a href="/analyze"><button>Run Network Analysis</button></a>
+
+    <div class="container">
+        <div class="card">
+            <h1>🚀 AI-Powered Network Monitoring</h1>
+            <p>Click below to start a deep network analysis.</p>
+
+            <!-- Fancy Spinner (Initially Hidden) -->
+            <div class="spinner-container" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Analyzing network metrics... Please wait</p>
+            </div>
+
+            <!-- Analyze Button -->
+            <a href="/analyze" onclick="showLoading(event)">
+                <button class="analyze-btn">🔍 Run Network Analysis</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showLoading(event) {
+            event.preventDefault(); // Prevent immediate navigation
+            document.getElementById("loadingSpinner").style.display = "block"; // Show spinner
+            
+            setTimeout(() => {
+                window.location.href = "/analyze"; // Redirect after a delay
+            }, 300);
+        }
+    </script>
+
 </body>
 </html>
 
