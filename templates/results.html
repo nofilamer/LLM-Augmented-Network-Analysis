@@ -5,37 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Network Analysis Results</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #333;
+        }
         table {
-            width: 90%; /* Increase table width slightly for better spacing */
+            width: 90%;
             border-collapse: collapse;
             margin: 20px auto;
         }
         th, td {
             border: 1px solid black;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
         th {
             background-color: #f4f4f4;
+            font-weight: bold;
         }
         td {
-            word-wrap: break-word;  /* Ensures long text wraps correctly */
-            white-space: normal;    /* Allows text to wrap inside table cells */
+            word-wrap: break-word;
+            white-space: normal;
         }
         td:first-child {
-            width: 25%;  /* Fix width for the "Metric" column */
+            width: 30%;
             font-weight: bold;
         }
         td:last-child {
-            width: 75%;  /* Set a wider width for "Analysis" */
-            max-width: 600px; /* Prevents too much stretching */
+            width: 70%;
+            max-width: 600px;
+        }
+        .critical { background-color: #ffcccc; }  /* Red for critical issues */
+        .warning  { background-color: #ffe5b4; }  /* Orange for warnings */
+        .info     { background-color: #e6f7ff; }  /* Light blue for informational */
+        
+        /* Button Styling */
+        .analyze-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .analyze-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Network Analysis Report</h1>
 
-    <h2>📊 Collected Network Metrics</h2>
+    <h1>🚀 AI-Powered Network Analysis</h1>
+
+    <h2>📈 AI-Powered Insights</h2>
+    <table>
+        <tr>
+            <th>Issue Name</th>
+            <th>Analysis</th>
+        </tr>
+        {% if analysis %}
+            {% for item in analysis %}
+            <tr class="
+                {% if 'packet loss' in item.Analysis or 'timeouts' in item.Analysis or 'congestion' in item.Analysis %}
+                    critical
+                {% elif 'buffer full' in item.Analysis or 'slow network' in item.Analysis %}
+                    warning
+                {% else %}
+                    info
+                {% endif %}
+            ">
+                <td>{{ item.Metric }}</td>
+                <td>{{ item.Analysis }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="2">⚠️ No AI analysis generated. Please check your OpenAI response.</td>
+            </tr>
+        {% endif %}
+    </table>
+
+    <h2>📊 Raw Network Metrics</h2>
     <table>
         <tr>
             <th>Metric</th>
@@ -49,21 +105,8 @@
         {% endfor %}
     </table>
 
-    <h2>📈 AI-Powered Analysis</h2>
-    <table>
-        <tr>
-            <th>Metric</th>
-            <th>Analysis</th>
-        </tr>
-        {% for item in analysis %}
-        <tr>
-            <td><b>{{ item.Metric }}</b></td>
-            <td>{{ item.Analysis }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <a href="/"><button class="analyze-btn">Run Again</button></a>
 
-    <a href="/"><button>Run Again</button></a>
 </body>
 </html>
 

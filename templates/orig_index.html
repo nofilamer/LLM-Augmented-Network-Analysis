@@ -4,44 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Network Analysis Dashboard</title>
-    <script>
-        function fetchAnalysis() {
-            document.getElementById("result").innerHTML = "Fetching network data...";
-            fetch("/analyze")
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById("result").innerHTML = `<p style='color:red;'>Error: ${data.error}</p>`;
-                    return;
-                }
-
-                let output = "<h3>Network Analysis Report</h3>";
-
-                output += "<h4>Metrics:</h4><ul>";
-                for (const [key, value] of Object.entries(data.metrics)) {
-                    output += `<li><strong>${key}:</strong> ${value}</li>`;
-                }
-                output += "</ul>";
-
-                output += "<h4>Analysis:</h4><table border='1' cellpadding='5'>";
-                output += "<tr><th>Metric</th><th>Analysis</th></tr>";
-                data.analysis.forEach(item => {
-                    output += `<tr><td>${item.Metric}</td><td>${item.Analysis}</td></tr>`;
-                });
-                output += "</table>";
-
-                document.getElementById("result").innerHTML = output;
-            })
-            .catch(error => {
-                document.getElementById("result").innerHTML = `<p style='color:red;'>Error fetching data.</p>`;
-            });
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
         }
-    </script>
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+        }
+        .analyze-btn {
+            padding: 12px 25px;
+            font-size: 18px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .analyze-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Spinner Styling */
+        .spinner {
+            display: none;
+            margin: 20px auto;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
+
     <h1>Network Monitoring & Analysis</h1>
-    <button onclick="fetchAnalysis()">Run Analysis</button>
-    <div id="result"></div>
+    <p>Click the button below to analyze network performance:</p>
+
+    <!-- Loading Spinner (Initially Hidden) -->
+    <div id="loadingSpinner" class="spinner"></div>
+
+    <!-- Analyze Button -->
+    <a href="/analyze" onclick="showLoading(event)">
+        <button class="analyze-btn">Run Network Analysis</button>
+    </a>
+
+    <script>
+        function showLoading(event) {
+            // Prevent immediate navigation to keep spinner visible
+            event.preventDefault();
+
+            // Show the spinner
+            document.getElementById("loadingSpinner").style.display = "block";
+
+            // Navigate to /analyze after a short delay to ensure spinner appears
+            setTimeout(() => {
+                window.location.href = "/analyze";
+            }, 200);  // Delay is just to ensure spinner is visible before redirection
+        }
+    </script>
+
 </body>
 </html>
-

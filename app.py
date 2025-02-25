@@ -8,6 +8,7 @@ import re
 app = Flask(__name__)
 
 # Initialize OpenAI client (ensure API key is set in environment variables)
+client = openai.OpenAI()
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def get_netstat_data():
@@ -44,10 +45,9 @@ def analyze_with_openai(metrics):
         "Analyze the following network statistics and identify potential bottlenecks, "
         "congestion issues, and system resource shortages that could cause retransmissions, "
         "packet loss, or TCP inefficiencies.\n\n"
-        "Provide the response in a structured format where each issue is clearly separated:\n"
-        "1. Issue Name - Explanation of the issue.\n"
-        "2. Issue Name - Explanation of the issue.\n"
-        "...\n\n"
+        "Provide the response in this format:\n"
+        "- **Issue Name: <Issue>**\n"
+        "  Explanation: <Detailed Explanation>\n\n"
         "Metrics:\n" + "\n".join(f"{item['Metric']}: {item['Value']}" for item in metrics)
     )
 
@@ -61,18 +61,36 @@ def analyze_with_openai(metrics):
 
     response_text = response.choices[0].message.content
 
-    # Print raw response for debugging (optional)
+    # Print raw response for debugging
     print("\n=== Raw OpenAI Response ===\n", response_text)
 
-    # Correctly extract numbered issues and explanations
+    # Extract structured issues
     formatted_rows = []
-    pattern = r"(\d+)\.\s(.+?)\s*-\s*(.+)"  # Extracts "1. Issue - Explanation"
+    lines = response_text.split("\n")
 
-    matches = re.findall(pattern, response_text, re.DOTALL)
+    current_issue = None
+    current_explanation = ""
 
-    for match in matches:
-        issue_number, metric, analysis = match
-        formatted_rows.append({"Metric": metric.strip(), "Analysis": analysis.strip()})
+    for line in lines:
+        line = line.strip()
+
+        # Identify issue names
+        if line.startswith("- **Issue Name:"):
+            if current_issue and current_explanation:
+                formatted_rows.append({"Metric": current_issue, "Analysis": current_explanation.strip()})
+
+            current_issue = line.replace("- **Issue Name:", "").replace("**", "").strip()
+            current_explanation = ""
+
+        elif line.startswith("Explanation:"):
+            current_explanation = line.replace("Explanation:", "").strip()
+
+        elif current_issue:
+            current_explanation += " " + line  # Append multi-line explanations
+
+    # Add last captured issue
+    if current_issue and current_explanation:
+        formatted_rows.append({"Metric": current_issue, "Analysis": current_explanation.strip()})
 
     return formatted_rows
 
